@@ -3,16 +3,16 @@ namespace App\Shell;
 
 use Cake\Console\Shell;
 use Cake\Controller\ComponentRegistry;
-use App\Controller\Component\AqoursComponent;
-use App\Controller\Component\RakutenComponent;
+use App\Controller\Component\IpoComponent;
+use App\Controller\Component\LineComponent;
 
 class IpoShell extends Shell
 {
 
   public function initialize() {
     // component
-    $this->Aqours  = new AqoursComponent(new ComponentRegistry());
-    $this->Rakuten = new RakutenComponent(new ComponentRegistry());
+    $this->Ipo  = new IpoComponent(new ComponentRegistry());
+    $this->Line = new LineComponent(new ComponentRegistry());
   }
 
   /**
@@ -53,14 +53,15 @@ class IpoShell extends Shell
             $data['code'] = $row['code'];
             $data['date'] = $row['date'];
             $data['name'] = $row['name'];
-            $data['market_id'] = $row['market_id'];
-            $data['market_id'] = $row['market_name'];
+            $data['market_id'] = '';
+            $data['market_name'] = $row['market_name'];
             $data['url'] = $row['url'];
             $data['p_kari'] = $row['p_kari'];
             $data['v_kobo'] = $row['v_kobo'];
             $data['p_uri'] = $row['p_uri'];
             $data['v_uri'] = $row['v_uri'];
             $data['unit'] = $row['unit'];
+            $result[] = $data;
           }
         }
       }
