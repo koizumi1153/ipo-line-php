@@ -5,6 +5,7 @@ use Cake\Console\Shell;
 use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\IpoComponent;
 use App\Controller\Component\LineComponent;
+require_once '/var/www/ipo/app/vendor/phpQuery-onefile.php';
 
 class IpoShell extends Shell
 {
@@ -89,39 +90,42 @@ class IpoShell extends Shell
     $result = array();
 
     if(!empty($information)) {
-      $url = AQOURS_NICONICO_URL;
+      $url = IPO_SCHUDULE_BASE_URL;
       foreach($information as $info) {
         $data = array();
         $code = $info['code'];
-        $html = file_get_contents($url.$code);
+        $html = @file_get_contents($url.$code);
+        if($html === false) continue;
         $doc = \phpQuery::newDocument($html);
-        $book_building_date = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('.kyotyo1')->text());
+        if(!empty(trim($doc['#mainspace']))) {
+          $book_building_date = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('.kyotyo1')->text());
 
-        $start = '';
-        $end   = '';
-        preg_match("@([0-9]{4,})/([0-9]{1,2})/([0-9]{1,2})@",$book_building_date,$date);
-        if(!empty($date)) {
-          $start = $date[0];
+          $start = '';
+          $end = '';
+          preg_match("@([0-9]{4,})/([0-9]{1,2})/([0-9]{1,2})@", $book_building_date, $date);
+          if (!empty($date)) {
+            $start = $date[0];
+          }
+
+          $str2 = substr($book_building_date, 10);
+          preg_match("@([0-9]{4,})/([0-9]{1,2})/([0-9]{1,2})@", $str2, $date2);
+          if (!empty($date2)) {
+            $end = $date2[0];
+          } else {
+            preg_match("@([0-9]{1,2})/([0-9]{1,2})@", $str2, $date3);
+            if (!empty($date3)) $end = $date3[0];
+          }
+          $attention = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('td:eq(0)')->text());
+
+          $data['code'] = $code;
+          $data['url'] = $url . $code;
+          $data['listed_date'] = $info['date'];
+          $data['book_building_date'] = $book_building_date;
+          $data['book_building_start_date'] = $start;
+          $data['book_building_end_date'] = $end;
+          $data['attention'] = $attention;
+          $result[] = $data;
         }
-
-        $str2 = substr($book_building_date, 10);
-        preg_match("@([0-9]{4,})/([0-9]{1,2})/([0-9]{1,2})@",$book_building_date,$date2);
-        if(!empty($date2)){
-          $end =$date2[0];
-        }else {
-          preg_match("@([0-9]{1,2})/([0-9]{1,2})@", $str2, $date3);
-          $end =$date3[0];
-        }
-        $attention = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('td:eq(0)')->text());
-
-        $data['code'] = $code;
-        $data['url']  = $url.$code;
-        $data['listed_date'] = $info['date'];
-        $data['book_building_date'] = $book_building_date;
-        $data['book_building_start_date'] = $start;
-        $data['book_building_end_date'] = $end;
-        $data['attention'] = $attention;
-        $result[] = $data;
       }
 
       if(!empty($result)){
