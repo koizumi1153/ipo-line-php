@@ -66,6 +66,10 @@ class IpoSchedule extends Table
       ->allowEmpty('attention');
 
     $validator
+      ->requirePresence('lottery_date', 'create')
+      ->allowEmpty('lottery_date');
+
+    $validator
       ->dateTime('deleted')
       ->allowEmpty('deleted');
 

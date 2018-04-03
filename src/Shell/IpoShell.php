@@ -117,6 +117,16 @@ class IpoShell extends Shell
           }
           $attention = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('td:eq(0)')->text());
 
+          $lottery_date = '';
+          $lottery_str = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(2)')->find('td:eq(0)')->text());
+          preg_match("@([0-9]{4,})/([0-9]{1,2})/([0-9]{1,2})@", $lottery_str, $date4);
+          if (!empty($date4)) {
+            $lottery_date = $date4[0];
+          } else {
+            preg_match("@([0-9]{1,2})/([0-9]{1,2})@", $lottery_str, $date5);
+            if (!empty($date5)) $lottery_date = date('Y')."/".$date5[0];
+          }
+
           $data['code'] = $code;
           $data['url'] = $url . $code;
           $data['listed_date'] = $info['date'];
@@ -124,6 +134,7 @@ class IpoShell extends Shell
           $data['book_building_start_date'] = $start;
           $data['book_building_end_date'] = $end;
           $data['attention'] = $attention;
+          $data['lottery_date'] = $lottery_date;
           $result[] = $data;
         }
       }
@@ -132,6 +143,18 @@ class IpoShell extends Shell
         $this->Ipo->setSchedule($result);
       }
     }
+  }
+
+  /**
+   * push
+   * 抽選日(当日20時)
+   * BB開始通知(前日20時)
+   * BB終了通知(前日20時)
+   *
+   */
+  public function push(){
+    // 抽選日情報取得
+
   }
 
 }
