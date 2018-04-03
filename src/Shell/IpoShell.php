@@ -113,7 +113,7 @@ class IpoShell extends Shell
             $end = $date2[0];
           } else {
             preg_match("@([0-9]{1,2})/([0-9]{1,2})@", $str2, $date3);
-            if (!empty($date3)) $end = $date3[0];
+            if (!empty($date3)) $end = date('Y')."/".$date3[0];
           }
           $attention = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('td:eq(0)')->text());
 
