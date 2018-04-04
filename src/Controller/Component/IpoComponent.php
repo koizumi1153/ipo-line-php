@@ -334,4 +334,38 @@ class IpoComponent extends Component
     );
   }
 
+  /**
+   * PUSH 可能ユーザー数取得
+   * @return mixed
+   */
+  public function getPushUsersCount($time='')
+  {
+    $query = $this->Users->find();
+    $query->where(['push_flg' => ON_FLG]);
+    $query->where(['deleted IS NULL']);
+
+    if(!empty($time)) $query->where(['push_time' => $time]);
+
+    $total = $query->count();
+    return $total;
+  }
+
+  /**
+   * PUSH可能ユーザー取得
+   * @param $page
+   * @return mixed
+   */
+  public function getPushUsers($page, $time='')
+  {
+    $query = $this->Users->find()->select(['user_id']);
+    $query->where(['push_flg' => ON_FLG]);
+    $query->where(['deleted IS NULL']);
+    $query->order(['id' => 'ASC']);
+    $query->limit(LINE_MULTI_USER)->page($page);
+
+    if(!empty($time)) $query->where(['push_time' => $time]);
+
+    $users = $query->hydrate(false)->toArray();
+    return $users;
+  }
 }
