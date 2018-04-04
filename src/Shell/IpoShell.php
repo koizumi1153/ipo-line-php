@@ -188,8 +188,8 @@ class IpoShell extends Shell
         $date = $schedule['book_building_date'];
         $info = $this->Ipo->getInfoFromCode($code);
 
-        if($cnt != 0) $text .= "\n\n";
-        $text .= "明日から".$info['name']."のブックビルディング期間です。\n{$date}";
+        if($cnt != 0) $text .= "\n\n\n";
+        $text .= "明日から".$info['name']."のブックビルディング期間です。\n\n{$schedule['attention']}\n\n{$date}\n\n{$schedule['url']}";
         $str = "明日から".$info['name']."の抽選申込期間です。\n{$date}";
         $this->Ipo->tweet($str);
         $cnt++;
