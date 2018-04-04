@@ -3,6 +3,7 @@ namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\ORM\TableRegistry;
+use Abraham\TwitterOAuth\TwitterOAuth; //twitter
 
 /**
  * Project Ipo 関連のコンポーネント（主にDB操作）
@@ -161,9 +162,20 @@ class IpoComponent extends Component
       $query=$this->Info->find();
       $query->where(['date > ' => $today]);
       $query->where(['deleted IS NULL']);
-      $maps = $query->hydrate(false)->toArray();
+      $info = $query->hydrate(false)->toArray();
 
-      return $maps;
+      return $info;
+    }
+
+    /**
+     * @param $code
+     * @return mixed
+     */
+    public function getInfoFromCode($code){
+      $query=$this->Info->find();
+      $query->where(['code' => $code]);
+      $query->where(['deleted IS NULL']);
+      return $query->first()->toArray();
     }
 
     /**
@@ -264,4 +276,62 @@ class IpoComponent extends Component
       }
     }
   }
+
+  /**
+   * 抽選日当日のデータを取得する
+   * @return mixed
+   */
+  public function getLotterySchedule(){
+    $today = date('Y-m-d');
+    $query=$this->Schedule->find();
+    $query->where(['lottery_date' => $today]);
+    $query->where(['deleted IS NULL']);
+    $schedule = $query->hydrate(false)->toArray();
+
+    return $schedule;
+  }
+
+  /**
+   * BB開始前日のデータを取得する
+   * @return mixed
+   */
+  public function getBookBuildingStartDateSchedule(){
+    $tomorrow = date('Y-m-d', strtotime('+1 day'));
+    $query=$this->Schedule->find();
+    $query->where(['book_building_start_date' => $tomorrow]);
+    $query->where(['deleted IS NULL']);
+    $schedule = $query->hydrate(false)->toArray();
+
+    return $schedule;
+  }
+
+
+  /**
+   * BB終了前日のデータを取得する
+   * @return mixed
+   */
+  public function getBookBuildingEndDateSchedule(){
+    $tomorrow = date('Y-m-d', strtotime('+1 day'));
+    $query=$this->Schedule->find();
+    $query->where(['book_building_end_date' => $tomorrow]);
+    $query->where(['deleted IS NULL']);
+    $schedule = $query->hydrate(false)->toArray();
+
+    return $schedule;
+  }
+
+  /**
+   * ツイート処理
+   *
+   * @param $str
+   */
+  public function tweet($str){
+    $twitter = new TwitterOAuth(IPO_TWITTER_CONSUMER_KEY, IPO_TWITTER_CONSUMER_SECRET, IPO_TWITTER_ACCESS_TOKEN, IPO_TWITTER_ACCESS_TOKEN_SECRET);
+
+    $result = $twitter->post(
+      "statuses/update",
+      array("status" => "{$str}")
+    );
+  }
+
 }
