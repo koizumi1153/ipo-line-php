@@ -180,10 +180,10 @@ class IpoShell extends Shell
 
     // BB開始通知(前日20時)
     $bookBuildingStartSchedule = $this->Ipo->getBookBuildingStartDateSchedule();
-    if(!empty($lotterySchedule)){
+    if(!empty($bookBuildingStartSchedule)){
       $text = "";
       $cnt=0;
-      foreach($lotterySchedule as $schedule){
+      foreach($bookBuildingStartSchedule as $schedule){
         $code = $schedule['code'];
         $date = $schedule['book_building_date'];
         $info = $this->Ipo->getInfoFromCode($code);
@@ -202,10 +202,10 @@ class IpoShell extends Shell
 
     // BB終了通知(前日20時)
     $bookBuildingEndSchedule = $this->Ipo->getBookBuildingEndDateSchedule();
-    if(!empty($lotterySchedule)){
+    if(!empty($bookBuildingEndSchedule)){
       $text = "";
       $cnt=0;
-      foreach($lotterySchedule as $schedule){
+      foreach($bookBuildingEndSchedule as $schedule){
         $code = $schedule['code'];
         $date = $schedule['book_building_date'];
         $info = $this->Ipo->getInfoFromCode($code);
