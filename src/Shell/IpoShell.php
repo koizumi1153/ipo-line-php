@@ -230,7 +230,7 @@ class IpoShell extends Shell
    */
   public function listing(){
     // 当日上場データを取得
-    $information = $this->Ipo->getInfoFromDate();
+    $information = $this->Ipo->getInfoListing();
     if(!empty($information)){
       $text = "";
       $cnt=0;

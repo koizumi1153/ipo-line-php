@@ -368,4 +368,17 @@ class IpoComponent extends Component
     $users = $query->hydrate(false)->toArray();
     return $users;
   }
+
+  /**
+   * @return mixed
+   */
+  public function getInfoListing(){
+    $today = date('Y-m-d');
+    $query=$this->Info->find();
+    $query->where(['date' => $today]);
+    $query->where(['deleted IS NULL']);
+    $info = $query->hydrate(false)->toArray();
+
+    return $info;
+  }
 }
