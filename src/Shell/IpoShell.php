@@ -169,14 +169,15 @@ class IpoShell extends Shell
         $date = $schedule['lottery_date'];
         $info = $this->Ipo->getInfoFromCode($code);
 
-        if($cnt != 0) $text .= "\n\n";
-        $text .= $info['name']."の当選発表日です。";
+        if($cnt != 0) $text .= "\n";
+        $text .= $info['name'];
         $str = $info['name']."の当選発表日です。";
         $this->Ipo->tweet($str);
         $cnt++;
       }
 
       if(!empty($text)){
+        $text .= "\nの当選発表日です。";
         $messageData = $this->Line->setTextMessage($text, $messageData);
       }
     }
@@ -192,15 +193,14 @@ class IpoShell extends Shell
         $info = $this->Ipo->getInfoFromCode($code);
 
         if($cnt != 0) $text .= "\n\n\n";
-        $text .= "明日から".$info['name']."のブックビルディング期間です。\n\n{$schedule['attention']}\n\n{$date}\n\n{$schedule['url']}";
+        $text .= "明日から\n".$info['name']."\nのブックビルディング期間です。\n\n{$schedule['attention']}\n\n{$date}\n\n{$schedule['url']}";
+        $messageData = $this->Line->setTextMessage($text, $messageData);
+
         $str = "明日から".$info['name']."の抽選申込期間です。\n{$date}";
         $this->Ipo->tweet($str);
         $cnt++;
       }
 
-      if(!empty($text)){
-        $messageData = $this->Line->setTextMessage($text, $messageData);
-      }
     }
 
     // BB終了通知(前日20時)
@@ -213,12 +213,13 @@ class IpoShell extends Shell
         $date = $schedule['book_building_date'];
         $info = $this->Ipo->getInfoFromCode($code);
 
-        if($cnt != 0) $text .= "\n\n";
-        $text .= $info['name']."のブックビルディング期間は明日まで！";
+        if($cnt != 0) $text .= "\n";
+        $text .= $info['name'];
         $cnt++;
       }
 
       if(!empty($text)){
+        $text .="\nのブックビルディング期間は明日まで！";
         $messageData = $this->Line->setTextMessage($text, $messageData);
       }
     }

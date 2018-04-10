@@ -33,7 +33,10 @@ class IpoController extends AppController
 
           $this->Ipo->setUsers($userId, $userName);
 
-          $text = "IPO関連の通知をお知らせします。";
+          $text = "IPO関連の情報をお知らせします。";
+          $messageData = $this->Line->setTextMessage($text, $messageData);
+
+          $text = "ブックビルディング開始前日20時、ブックビルディング終了前日20時、当選発表20時に通知します。";
           $messageData = $this->Line->setTextMessage($text, $messageData);
         } elseif ($type == 'unfollow') {
           $this->Ipo->deleteUser($userId);
