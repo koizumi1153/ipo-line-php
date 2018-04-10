@@ -381,4 +381,14 @@ class IpoComponent extends Component
 
     return $info;
   }
+
+  public function getScheduleFromDate(){
+    $today = date('Y-m-d');
+    $query=$this->Schedule->find();
+    $query->where(['listed_date > ' => $today]);
+    $query->where(['deleted IS NULL']);
+    $info = $query->hydrate(false)->toArray();
+
+    return $info;
+  }
 }

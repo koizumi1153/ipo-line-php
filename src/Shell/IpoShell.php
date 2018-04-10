@@ -89,6 +89,8 @@ class IpoShell extends Shell
   public function schedule(){
     $now = date('Y-m-d H:i:s');
     $information = $this->Ipo->getInfoFromDate();
+    $schedule = $this->Ipo->getScheduleFromDate();
+    $scheduleIds = array_column($schedule,NULL,'code');
     $result = array();
 
     if(!empty($information)) {
@@ -96,6 +98,7 @@ class IpoShell extends Shell
       foreach($information as $info) {
         $data = array();
         $code = $info['code'];
+        if(isset($scheduleIds[$code])) continue;
         $html = @file_get_contents($url.$code);
         if($html === false) continue;
         $doc = \phpQuery::newDocument($html);
