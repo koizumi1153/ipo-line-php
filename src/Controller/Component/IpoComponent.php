@@ -212,6 +212,7 @@ class IpoComponent extends Component
         'book_building_end_date',
         'attention',
         'lottery_date',
+        'lead_manager',
         'created'
       ]);
       if (!empty($contents)) {

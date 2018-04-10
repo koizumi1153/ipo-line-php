@@ -132,6 +132,8 @@ class IpoShell extends Shell
             if (!empty($date5)) $lottery_date = date('Y')."/".$date5[0];
           }
 
+          $lead_manager = ( trim($doc['#mainspace #page .po_none']->find('#syukanji')->text() ) );
+
           $data['code'] = $code;
           $data['url'] = $url . $code;
           $data['listed_date'] = $info['date'];
@@ -140,6 +142,7 @@ class IpoShell extends Shell
           $data['book_building_end_date'] = $end;
           $data['attention'] = $attention;
           $data['lottery_date'] = $lottery_date;
+          $data['lead_manager'] = $lead_manager;
           $result[] = $data;
         }
       }
@@ -193,7 +196,10 @@ class IpoShell extends Shell
         $info = $this->Ipo->getInfoFromCode($code);
 
         if($cnt != 0) $text .= "\n\n\n";
-        $text .= "明日から\n".$info['name']."\nブックビルディング期間です。\n\n{$schedule['attention']}\n\n{$date}\n\n{$schedule['url']}";
+        $text .= "明日から\n".$info['name']."\nブックビルディング期間です。";
+        $text .= "\n\n{$schedule['attention']}";
+        if(!empty($schedule['lead_manager'])) $text .= "\n\n主幹事証券：{$schedule['lead_manager']}";
+        $text .= "\n\n{$date}\n\n{$schedule['url']}";
         $messageData = $this->Line->setTextMessage($text, $messageData);
 
         $str = "明日から".$info['name']."の抽選申込期間です。\n{$date}";
