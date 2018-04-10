@@ -177,7 +177,7 @@ class IpoShell extends Shell
       }
 
       if(!empty($text)){
-        $text .= "\nの当選発表日です。";
+        $text .= "\n当選発表日です！";
         $messageData = $this->Line->setTextMessage($text, $messageData);
       }
     }
@@ -193,7 +193,7 @@ class IpoShell extends Shell
         $info = $this->Ipo->getInfoFromCode($code);
 
         if($cnt != 0) $text .= "\n\n\n";
-        $text .= "明日から\n".$info['name']."\nのブックビルディング期間です。\n\n{$schedule['attention']}\n\n{$date}\n\n{$schedule['url']}";
+        $text .= "明日から\n".$info['name']."\nブックビルディング期間です。\n\n{$schedule['attention']}\n\n{$date}\n\n{$schedule['url']}";
         $messageData = $this->Line->setTextMessage($text, $messageData);
 
         $str = "明日から".$info['name']."の抽選申込期間です。\n{$date}";
@@ -219,7 +219,7 @@ class IpoShell extends Shell
       }
 
       if(!empty($text)){
-        $text .="\nのブックビルディング期間は明日まで！";
+        $text .="\nブックビルディング期間は明日まで！";
         $messageData = $this->Line->setTextMessage($text, $messageData);
       }
     }

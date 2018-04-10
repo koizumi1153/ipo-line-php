@@ -326,12 +326,14 @@ class IpoComponent extends Component
    * @param $str
    */
   public function tweet($str){
-    $twitter = new TwitterOAuth(IPO_TWITTER_CONSUMER_KEY, IPO_TWITTER_CONSUMER_SECRET, IPO_TWITTER_ACCESS_TOKEN, IPO_TWITTER_ACCESS_TOKEN_SECRET);
+    if(CAKEPHP_ENV == "production") {
+      $twitter = new TwitterOAuth(IPO_TWITTER_CONSUMER_KEY, IPO_TWITTER_CONSUMER_SECRET, IPO_TWITTER_ACCESS_TOKEN, IPO_TWITTER_ACCESS_TOKEN_SECRET);
 
-    $result = $twitter->post(
-      "statuses/update",
-      array("status" => "{$str}")
-    );
+      $result = $twitter->post(
+        "statuses/update",
+        array("status" => "{$str}")
+      );
+    }
   }
 
   /**
