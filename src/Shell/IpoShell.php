@@ -98,10 +98,22 @@ class IpoShell extends Shell
       foreach($information as $info) {
         $data = array();
         $code = $info['code'];
-        if(isset($scheduleIds[$code])) continue;
-        $html = @file_get_contents($url.$code);
-        if($html === false) continue;
+        //$html = @file_get_contents($url.$code);
+        //if($html === false) continue;
+
+        $html = self::getHtml($url.$code);
+        if(empty($html)) continue;
+
         $doc = \phpQuery::newDocument($html);
+
+        if(isset($scheduleIds[$code])){
+          $attention = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('td:eq(0)')->text());
+
+          $this->Ipo->updateSchedule($code, $attention);
+          continue;
+        }
+
+
         if(!empty(trim($doc['#mainspace']))) {
           $book_building_date = trim($doc['#mainspace #page .tb_brown_sp']->find('table:eq(1)')->find('.kyotyo1')->text());
 
@@ -200,12 +212,13 @@ class IpoShell extends Shell
         $text .= "\n\n{$schedule['attention']}";
         if(!empty($schedule['lead_manager'])) $text .= "\n\n主幹事証券：{$schedule['lead_manager']}";
         $text .= "\n\n{$date}\n\n{$schedule['url']}";
-        $messageData = $this->Line->setTextMessage($text, $messageData);
 
         $str = "明日から".$info['name']."の抽選申込期間です。\n{$date}";
         $this->Ipo->tweet($str);
         $cnt++;
       }
+
+      if(!empty($text)) $messageData = $this->Line->setTextMessage($text, $messageData);
 
     }
 
@@ -257,4 +270,42 @@ class IpoShell extends Shell
     $this->Ipo->tweet($str);
   }
 
+  /**
+   * @param $url
+   * @return array|mixed
+   */
+  public function getHtml($url){
+    $option = [
+      CURLOPT_RETURNTRANSFER => true, //文字列として返す
+      CURLOPT_TIMEOUT        => 3, // タイムアウト時間
+    ];
+
+    $curl = curl_init($url);
+    curl_setopt_array($curl, $option);
+
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_BINARYTRANSFER,1);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($curl, CURLOPT_MAXREDIRS, 3);
+
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+    $result    = curl_exec($curl);
+    $info    = curl_getinfo($curl);
+    $errorNo = curl_errno($curl);
+
+    // OK以外はエラーなので空白配列を返す
+    if ($errorNo !== CURLE_OK) {
+      // 詳しくエラーハンドリングしたい場合はerrorNoで確認
+      // タイムアウトの場合はCURLE_OPERATION_TIMEDOUT
+      return [];
+    }
+
+    // 200以外のステータスコードは失敗とみなし空配列を返す
+    if ($info['http_code'] !== 200) {
+      return [];
+    }
+
+    return $result;
+  }
 }

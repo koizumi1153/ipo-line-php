@@ -225,6 +225,22 @@ class IpoComponent extends Component
     }
 
   /**
+   * @param $code
+   * @param $attention
+   */
+    public function updateSchedule($code, $attention){
+      $now = date('Y-m-d H:i:s');
+      $query=$this->Schedule->query();
+
+      $query->update()
+        ->set(['updated' => $now])
+        ->set(['attention' => $attention])
+        ->where(['code' => $code])
+        ->where(['deleted IS NULL'])
+        ->execute();
+    }
+
+  /**
    * push_flg変更
    * @param $userId
    * @param string $flg
